@@ -1,0 +1,55 @@
+.board{
+
+	margin: 0 auto;
+	border-color: grey;
+	border-style: solid;
+	border-width: 5px;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	font-size: 0;
+}
+
+.boardContainer{
+	position: relative;
+	text-align: center;
+	width: 100%;
+	padding-bottom: 100%;
+	float: left;
+	height: 0;
+	margin-bottom: 10px;
+}
+
+.boardContainerContainer{
+	max-width: 700px;
+}
+
+.col{
+
+	padding: 0;
+	margin: 0;
+}
+
+.row{
+
+	padding: 0;
+	margin: 0;
+	width: 100%;
+	height: calc(100% / 8);
+	display: inline-flex;
+}
+
+.square{
+
+	width: calc(100% / 8);
+	height: 100%;
+	background-color: black;
+}
+
+.black{
+	background-color: black;
+}
+
+.white{
+	background-color: white;
+}
