@@ -1,42 +1,90 @@
 import Square from './square'
 import Row from 'react-bootstrap/Row';
 import styles from './checkers.module.css'
+import Draggable from '../../draggable.js'
+import Piece from './game-piece.js'
 
-/**
- * 
- * @param {Array} squares 
- */
-export default function Board({ gameState }) {
 
-	const rows = Array();
+class Board extends React.Component {
 
-	for (let row = 0; row < 8; row ++){
-		rows.push(renderRow(row, gameState))
+	/**
+	 * 
+	 * @param {{gameState, moveHandler<parent, x, y>}, ...props} props 
+	 */
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			reload: true,
+		}
+
+		this.ref = React.createRef();
+		/*this.squareRefs = Array();
+
+		for (let i = 0; i < 64; i ++){ 
+			this.squareRefs.push(React.createRef()); // This might not be the right way to do things..
+		}*/
+
+	/*	React.useEffect(() =>{
+
+			function handleResize () {
+				this.setState();
+			}
+
+			window.addEventListener('resize', handleResize);
+		});
+*/
+		this.getDefaultPieces = this.getDefaultPieces.bind(this);
 	}
 
-	return (
-		<div className={styles.board}>
-			{rows}
-		</div>
-	);
-}
+	getDefaultPieces() {
 
-function renderRow(row, gameState){
+		const pieces = Array();
 
-	const cols = Array();
+		for (const item of this.redSpawns){
 
-	for (let col = 0; col < 8; col ++){
+			const squarePos = $(this.squareRefs[item].current).offset();
+			pieces.push(<Draggable x={squarePos.x} y={squarePos.y} parent={this.ref}><Piece/></Draggable>)
+		}
 
-		let square = gameState[(row * 8) + col];
-		cols.push(renderSquare(square));
+		return pieces;
 	}
 
-	return <div className={styles.row}>{cols}</div>
-}
+	renderRow(row, squares) {
+
+		const cols = Array();
+
+		for (let col = 0; col < 8; col++) {
+			cols.push(this.renderSquare(squares[(row * 8) + col]));
+		}
+
+		return <div className={styles.row}>{cols}</div>
+	}
 
 
-function renderSquare(square){
-	return (
-		<Square colorClass={square.colorClass}/>
-	);
+	renderSquare(square) {
+
+	
+		return (
+			<Square square={square} moveHandler={this.props.moveHandler}/>
+		);
+	}
+
+
+	render(){
+		const rows = Array();
+
+		for (let row = 0; row < 8; row++) {
+			rows.push(this.renderRow(row, this.props.gameState.squares))
+		}
+
+		return (
+			<div ref={this.ref} className={styles.board}>
+				{rows}
+				
+			</div>
+		);
+	}
 }
+
+export default Board;
