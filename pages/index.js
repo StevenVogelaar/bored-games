@@ -2,6 +2,10 @@ import Head from 'next/head'
 import styles from '../styles/index.module.css'
 import Container from 'react-bootstrap/Container'
 import CheckersPreview from '../components/checkers-preview'
+import Button from 'react-bootstrap/Button';
+import ServerTester from '../components/server-tester';
+import ServerTesterHTTP from '../components/server-tester-http'
+
 
 export default function Home() {
 
@@ -17,9 +21,14 @@ export default function Home() {
 
       <CheckersPreview/>
 
-
+      <ServerTester></ServerTester>
+      <ServerTesterHTTP></ServerTesterHTTP>
 
     </Container>
   )
 
 }
+
+
+
+

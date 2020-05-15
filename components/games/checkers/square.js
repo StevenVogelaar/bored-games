@@ -8,6 +8,7 @@ class Square extends React.Component {
 	/**
 	 * 
 	 * @param {square, moveHandler<parent, x, y>, ...props} props 
+	 * 		// See checkers-game-widget.js getDefaultGameState() for whats in "square"
 	 */
 	constructor(props) {
 
