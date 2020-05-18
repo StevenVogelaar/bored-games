@@ -1,10 +1,11 @@
 import Head from 'next/head'
 import styles from '../styles/index.module.css'
 import Image from 'react-bootstrap/Image'
-import Button from 'react-bootstrap/Button'
 import Container from 'react-bootstrap/Container'
 import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
+import NewGameButton from '../components/new-game-button';
+import Button from 'react-bootstrap/Button'
 
 
 export default function CheckersPreview(props) {
@@ -27,7 +28,7 @@ export default function CheckersPreview(props) {
 
 				<Container style={{ textAlign: "center" }}>
 					<Row>
-						<Col className="center-block"><Button size="lg" href="/checkers-game">New Game</Button></Col>
+						<Col className="center-block"><NewGameButton></NewGameButton></Col>
 						<Col className="center-block"><Button size="lg">Join Game</Button></Col>
 					</Row>
 
