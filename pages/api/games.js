@@ -30,14 +30,14 @@ export default async function handler(req, res) {
 			console.log("finished");
 		} catch (err) {
 			console.log(err);
-			res.status(500).json(JSON.stringify({message: "Error with configuration. Please contact site admin."}));
+			res.status(500).json(JSON.stringify({ message: "Error with configuration. Please contact site admin." }));
 			return;
 		}
 	}
 
 	if ('content-type' in req.headers === false || req.headers['content-type'] !== 'application/json') {
 
-		res.status(400).json(JSON.stringify({message: "Incorrect content-type"}));
+		res.status(400).json(JSON.stringify({ message: "Incorrect content-type" }));
 		return;
 	}
 
@@ -51,7 +51,12 @@ export default async function handler(req, res) {
 			return;
 		}
 
-		await publicFunctions[req.body.method](req, res); // Expecting these functions to handle sending the response.
+		try {
+			publicFunctions[req.body.method](req, res); // Expecting these functions to handle sending the response.
+		} catch (err) {
+			console.error(err);
+			res.status(400).json(JSON.stringify({ message: "Internal error." }));
+		}
 
 		return;
 	} else {
@@ -105,27 +110,22 @@ async function getPublicGames(req, res) {
  * 
  * 		{"host":localhost, "port":1234}
  */
-async function startNewGame(req, res){
+async function startNewGame(req, res) {
 
 
 	const results = await gservers.find({}).toArray();
 
-	if (results.length === 0){
-		res.status(500).json(JSON.stringify({message: "No available game servers."}));
+	if (results.length === 0) {
+		res.status(500).json(JSON.stringify({ message: "No available game servers." }));
 		return;
 	}
 
-	const i = Math.round(Math.random() * (results.length - 1));
-	const server = results[i];
-
-	console.log(results);
-	console.log(server);
-	console.log(i);
+	const server = results[Math.round(Math.random() * (results.length - 1))];
 	const webSocket = new WebSocket(server.host + ":" + server.port);
-	
+
 	webSocket.onopen = (e) => {
 
-		webSocket.send(JSON.stringify({method: "startNewGame"}));
+		webSocket.send(JSON.stringify({ method: "startNewGame" }));
 	};
 
 	webSocket.onmessage = (messageEvent) => {
@@ -134,20 +134,25 @@ async function startNewGame(req, res){
 
 		const jsonMessage = JSON.parse(messageEvent.data);
 
-		if (jsonMessage.error){
+		if (jsonMessage.error) {
 			console.error(jsonMessage.message);
-			res.status(500).json(JSON.stringify({message: "Internal error."}));
+			res.status(500).json(JSON.stringify({ message: "Internal error." }));
 		} else {
-			res.status(200).json(JSON.stringify({message: "Yo a room was opened."}));
+			res.status(200).json(JSON.stringify({
+				message: "Room created successfully",
+				roomID: jsonMessage.roomID,
+				host: jsonMessage.host,
+				port: jsonMessage.port
+			}));
 		}
 
-		
+
 		webSocket.close();
 	};
 
 	webSocket.onerror = (err) => {
 		console.error(err);
-		res.status(500).json(JSON.stringify({message: "An error has occured."}));
+		res.status(500).json(JSON.stringify({ message: "An error has occured." }));
 		webSocket.close();
 	};
 
