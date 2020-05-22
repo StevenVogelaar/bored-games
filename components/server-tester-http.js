@@ -23,7 +23,7 @@ class ServerTesterHTTP extends React.Component {
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({method: "getPublicGames"})
+			body: JSON.stringify({ method: "getPublicGames" })
 		};
 
 		let request = new Request('api/games', init);

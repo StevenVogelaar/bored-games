@@ -2,11 +2,13 @@ import MongoDB from 'mongodb';
 import ConfigManager from '../../lib/ConfigManager';
 import http from 'http';
 import WebSocket from 'ws';
+import sanitize from 'mongo-sanitize';
 
 const publicFunctions = {
 
 	getPublicGames: getPublicGames,
-	startNewGame: startNewGame
+	startNewGame: startNewGame,
+	getRoomInfo: getRoomInfo
 };
 
 var dbConnected = false;
@@ -17,6 +19,7 @@ const config = ConfigManager.readConfig();
 var mongoClient = null;
 var boredDB = null;
 var gservers = null;
+var rooms = null;
 
 
 
@@ -73,6 +76,8 @@ async function connectToDB() {
 
 	boredDB = mongoClient.db('boredDB');
 	gservers = boredDB.collection('gservers');
+	rooms = boredDB.collection('rooms');
+
 	dbConnected = true;
 	console.log("Connection established with db.");
 }
@@ -92,9 +97,41 @@ async function connectToDB() {
  */
 async function getPublicGames(req, res) {
 
-	const results = await gservers.find({}).toArray();
+	const results = await rooms.find({password: ""}).toArray();
 	console.log(results);
 	res.status(200).json(JSON.stringify(results));
+}
+
+/**
+ * 
+ * @param {http.IncomingMessage} req 
+ * 		Expecting a json object in the form:
+ * 			{method:"getGameInfo", roomID:"F2B5BC1"}
+ * @param {http.ServerResponse} res 
+ * 
+ * Example response:
+ * 
+ * 		{"roomID":"fa2g5a1j", "host":"localhost", "port":1234, password:true}
+ */
+async function getRoomInfo(req, res){
+
+
+	if ("roomID" in req.body === false){
+		res.status(400).json(JSON.stringify({message: 'roomID was not specified.'}));
+		return;
+	}
+
+	const result = await rooms.findOne({roomID: sanitize(req.body.roomID)});
+
+	if (result){
+
+		const {type, roomID, host, port} = result;
+		res.status(200).json(JSON.stringify({type, roomID, host, port}));
+		return;
+	} else {
+		res.status(500).json(JSON.stringify({message: 'Specified room was not found.'}));
+		return;
+	}
 }
 
 /**
@@ -104,11 +141,15 @@ async function getPublicGames(req, res) {
  * TODO: Change to round robin or finish the load balancer
  * 
  * @param {http.IncomingMessage} req 
+ * 		Expects json data. Example:
+ * 			{type:"checkers", password:""} 
+ * 			or
+ * 			{type:"checkers", password:"pass123"}
  * @param {http.ServerResponse} res 
  *   
  * 	Example response:
  * 
- * 		{"host":localhost, "port":1234}
+ * 		{"roomID":"fa2g5a1j", "host":"localhost", "port":1234, password:""}
  */
 async function startNewGame(req, res) {
 
@@ -120,12 +161,22 @@ async function startNewGame(req, res) {
 		return;
 	}
 
+	if ("password" in req.body === false){
+		res.status(400).json(JSON.stringify({ message: '"Password" parameter not specified (can be empty).' }));
+		return;
+	}
+	if ("type" in req.body === false){
+		res.status(400).json(JSON.stringify({ message: '"type" parameter not specified.' }));
+		return;
+	}
+
+
 	const server = results[Math.round(Math.random() * (results.length - 1))];
 	const webSocket = new WebSocket(server.host + ":" + server.port);
 
 	webSocket.onopen = (e) => {
 
-		webSocket.send(JSON.stringify({ method: "startNewGame" }));
+		webSocket.send(JSON.stringify({ method: "startNewGame", password: req.body.password, type:req.body.type}));
 	};
 
 	webSocket.onmessage = (messageEvent) => {
@@ -136,7 +187,7 @@ async function startNewGame(req, res) {
 
 		if (jsonMessage.error) {
 			console.error(jsonMessage.message);
-			res.status(500).json(JSON.stringify({ message: "Internal error." }));
+			res.status(500).json(JSON.stringify({ message: jsonMessage.message }));
 		} else {
 			res.status(200).json(JSON.stringify({
 				message: "Room created successfully",

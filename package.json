@@ -11,6 +11,7 @@
     "auto-bind": "^4.0.0",
     "bootstrap": "^4.4.1",
     "cors": "^2.8.5",
+    "mongo-sanitize": "^1.1.0",
     "mongodb": "^3.5.7",
     "next": "9.3.5",
     "react": "16.13.1",
