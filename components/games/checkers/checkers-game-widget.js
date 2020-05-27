@@ -80,7 +80,8 @@ class CheckersGameWidget extends React.Component {
 				id: i,
 				colorClass: (white ? styles.white : styles.black),
 				piece: {
-					type: this.redSpawns.includes(i) ? this.pieceTypes.red : (this.blackSpawns.includes(i) ? this.pieceTypes.black : null),
+					//type: this.redSpawns.includes(i) ? this.pieceTypes.red : (this.blackSpawns.includes(i) ? this.pieceTypes.black : null),
+					type: null,
 				},
 				ref: React.createRef(),
 			} // square object

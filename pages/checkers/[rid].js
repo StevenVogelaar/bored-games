@@ -97,10 +97,19 @@ export default class GameRoomPage extends React.Component {
 		this.webSocket.addEventListener('open', this.handleOpen);
 	}
 
+
+	heartBeat(){
+
+		this.webSocket.send(JSON.stringify({method:'heartbeat', message:''}));
+
+		setTimeout(this.heartBeat, 5000);
+	}
+
 	// ===================== WebSocket Handlers ================
 
 		handleOpen(){
 			this.webSocket.send(JSON.stringify({method:'joinRoom', roomID: this.roomID, password:"", message: "Hello from client!"}));
+
 		}
 
 		handleClose(event){
@@ -118,12 +127,21 @@ export default class GameRoomPage extends React.Component {
 
 		handleMessage(event){
 
-			console.log(event.data);
+			console.log("=== " + event.data);
 
 			const jsonData = JSON.parse(event.data);
 
 			if (jsonData.error){
 				this.setState({error: true, errorText: jsonData.message});
+			}
+
+			switch (jsonData.method){
+				case 'heartBeat':
+					this.webSocket.send(JSON.stringify({error: false, method:'heartBeat', id: jsonData.id, message:'hello'}));
+				break;
+
+				default:
+					console.error("Unrecognized method recieved from server.");
 			}
 		}
 
