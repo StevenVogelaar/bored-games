@@ -4,17 +4,13 @@ import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
 import autoBind from 'auto-bind';
 import Router from 'next/router';
+import AbstractGamePage from '../../lib/pages/AbstractGamePage';
 
 
-export default class GameRoomPage extends React.Component {
+export default class CheckersPage extends AbstractGamePage {
 
 	constructor(props) {
 		super(props);
-
-		this.state = {
-			error: false,
-			errorText: ""
-		}
 
 		autoBind(this);
 	}
@@ -22,146 +18,20 @@ export default class GameRoomPage extends React.Component {
 	componentDidMount() {
 	}
 
-	async getGameInfo() {
 
-		
-		this.roomID = Router.query.rid;
-	
-		// Check to see if the game room actualy exists.
-		let init = {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({ method: "getRoomInfo", roomID: Router.query.rid })
-		};
 
-		let request = new Request('../api/games', init);
 
-		try {
-
-			const res = await fetch(request);
-
-			 if (res.status != 200) {
-
-				var errorText;
-
-				if (res.status === 404){
-
-					errorText = res.statusText;
-					console.error(res.statusText);
-				} else {
-
-					const jsonMsg = await res.json();
-					errorText = jsonMsg.message;
-					console.error(jsonMsg.message);
-				}
-
-				this.setState({error: true, errorText: errorText});
-				
-			} else {
-
-				const resJson = await res.json();
-				console.log(resJson);
-
-				this.connectToRoom(resJson);
-			}
-
-		} catch (err) {
-			console.log(err);
-		}
+	getGameType() {
+		return 'checkers';
 	}
-
-
-	hideError(){
-		this.setState({error: false});
-	}
-
-
-	/**
-	 * 
-	 * @param Object} msg 
-	 * 		Expecting:
-	 * 			{type:<String>, roomID<String>, host:<String>, port:<Number>}
-	 */
-	connectToRoom(msg){
-
-		console.log("1");
-
-		this.webSocket = new WebSocket(msg.host + ':' + msg.port);
-
-		console.log("2");
-		this.webSocket.addEventListener('close', this.handleClose);
-		this.webSocket.addEventListener('error', this.handleError);
-		this.webSocket.addEventListener('message', this.handleMessage);
-		this.webSocket.addEventListener('open', this.handleOpen);
-	}
-
-
-	heartBeat(){
-
-		this.webSocket.send(JSON.stringify({method:'heartbeat', message:''}));
-
-		setTimeout(this.heartBeat, 5000);
-	}
-
-	// ===================== WebSocket Handlers ================
-
-		handleOpen(){
-			this.webSocket.send(JSON.stringify({method:'joinRoom', roomID: this.roomID, password:"", message: "Hello from client!"}));
-
-		}
-
-		handleClose(event){
-
-			console.log();
-		}
-
-		handleError(event){
-
-
-			console.error(event);
-
-			this.setState({error: true, errorText: "An error has occured."});
-		}
-
-		handleMessage(event){
-
-			console.log("=== " + event.data);
-
-			const jsonData = JSON.parse(event.data);
-
-			if (jsonData.error){
-				this.setState({error: true, errorText: jsonData.message});
-			}
-
-			switch (jsonData.method){
-				case 'heartBeat':
-					this.webSocket.send(JSON.stringify({error: false, method:'heartBeat', id: jsonData.id, message:'hello'}));
-				break;
-
-				default:
-					console.error("Unrecognized method recieved from server.");
-			}
-		}
-
-	// =========================================================
-
 
 	render() {
 
-		var alert;
-
-
-		if (this.state.error){
-			alert = <Alert variant="danger" dismissible="true" onClose={this.hideError}>{this.state.errorText}</Alert>
-		}
-
 		return (
 			<Container className="center-block" style={{ textAlign: "center" }}>
-				{alert}
+				{this.getAlertJSX()}
 				<CheckersGameWidget></CheckersGameWidget>
-				<Button onClick={this.getGameInfo}>TEst</Button>
+				<Button onClick={this.gameController.getGameInfo}>TEst</Button>
 			</Container>
 		);
 
