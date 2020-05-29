@@ -1,8 +1,8 @@
-import Square from './square'
+import Square from './Square'
 import Row from 'react-bootstrap/Row';
 import styles from './board.module.css'
 import Draggable from '../draggable.js'
-import Piece from './game-piece.js'
+import Piece from './GamePiece.js'
 
 
 class Board extends React.Component {

@@ -1,5 +1,5 @@
 import styles from './board.module.css'
-import GamePiece from './game-piece.js'
+import GamePiece from './GamePiece'
 import Draggable from '../draggable';
 
 
