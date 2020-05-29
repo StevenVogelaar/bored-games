@@ -1,4 +1,4 @@
-import CheckersGameWidget from '../components/games/checkers/checkers-game-widget'
+import CheckersGameWidget from '../components/games/checkers/CheckersGameWidget'
 import Container from 'react-bootstrap/Container'
 
 

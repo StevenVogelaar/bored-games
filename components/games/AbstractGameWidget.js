@@ -1,48 +1,21 @@
-import styles from './checkers.module.css'
+import styles from './board.module.css'
 import Board from './board'
 import Container from 'react-bootstrap/Container';
+import GameController from '../../lib/GameControllers/GameController'
+import Button from 'react-bootstrap/Button';
+import autoBind from 'auto-bind';
+import Alert from 'react-bootstrap/Alert';
 
 
-class CheckersGameWidget extends React.Component {
 
-	constructor(props) {
+class AbstractGameWidget extends React.Component{
+
+
+
+	constructor(props){
+
 		super(props);
-
-		this.redSpawns = [
-			40,
-			42,
-			44,
-			46,
-			49,
-			51,
-			53,
-			55,
-			56,
-			58,
-			60,
-			62
-		];
-
-		this.blackSpawns = [
-			1,
-			3,
-			5,
-			7,
-			8,
-			10,
-			12,
-			14,
-			17,
-			19,
-			21,
-			23
-		];
-
-		this.pieceTypes = { // Do the same for colorClass?
-			red: "red",
-			black: "black"
-		};
-
+		autoBind(this);
 
 		this.state = {
 			roomID: -1,
@@ -51,18 +24,10 @@ class CheckersGameWidget extends React.Component {
 			},
 		};
 
-		this.moveHandler = this.moveHandler.bind(this);
-	}
 
-		/**
-	 * Need to wait until the page renders once, so we have positions for the board squares, so
-	 * we can center the pieces.
-	 */
-	componentDidMount() {
-	
-		this.setState({reload: false});
+		this.gameController = new GameController(this.getGameType());
+		this.gameController.addListener('error', this.gameControllerError)
 	}
-
 
 	/**
 	 * Returns the game state in the form of an array. Each board square has an id
@@ -77,13 +42,10 @@ class CheckersGameWidget extends React.Component {
 		for (let i = 0; i < 64; i++) {
 			ar[i] =
 			{
-				id: i,
-				colorClass: (white ? styles.white : styles.black),
-				piece: {
-					//type: this.redSpawns.includes(i) ? this.pieceTypes.red : (this.blackSpawns.includes(i) ? this.pieceTypes.black : null),
-					type: null,
-				},
+				id: i, // Id for the square
+				piece: null, // An instance of AbstractPiece or null.
 				ref: React.createRef(),
+				colorClass: (white ? styles.white : styles.black),
 			} // square object
 
 			if ((i + 1) % 8 != 0) {
@@ -125,14 +87,53 @@ class CheckersGameWidget extends React.Component {
 
 
 	render() {
+
+		const alertJSX = this.getAlertJSX();
+
 		return (
 			<Container className={styles.boardContainerContainer}>
+				{alertJSX}
+				<Button onClick={this.gameController.getGameInfo}>TEst</Button>
 				<div className={styles.boardContainer}>
 					<Board gameState={this.state.gameState} moveHandler={this.moveHandler} />
 				</div>
 			</Container>
 		);
 	}
+
+
+
+	/**
+	 * If there is a current error alert, this function will return alert JSX,
+	 * empty object otherwise.
+	 */
+	getAlertJSX(){
+
+		if (this.state.error){
+			return <Alert variant="danger" dismissible="true" onClose={this.hideError}>{this.state.errorText}</Alert>
+		}
+
+		return null;
+	}
+
+	hideError(){
+		this.setState({error: false});
+	}
+
+	gameControllerError(err){
+
+		console.log('Error in game controller.');
+		this.setState({
+			error: true,
+			errorText: err
+		});
+	}
+
+
+	getGameType(){
+		throw Error("Must override AbstractGamePage.getGameType() in sub classes.");
+	}
+
 }
 
-export default CheckersGameWidget;
+export default AbstractGameWidget;

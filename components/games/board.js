@@ -1,7 +1,7 @@
 import Square from './square'
 import Row from 'react-bootstrap/Row';
-import styles from './checkers.module.css'
-import Draggable from '../../draggable.js'
+import styles from './board.module.css'
+import Draggable from '../draggable.js'
 import Piece from './game-piece.js'
 
 
@@ -19,21 +19,6 @@ class Board extends React.Component {
 		}
 
 		this.ref = React.createRef();
-		/*this.squareRefs = Array();
-
-		for (let i = 0; i < 64; i ++){ 
-			this.squareRefs.push(React.createRef()); // This might not be the right way to do things..
-		}*/
-
-	/*	React.useEffect(() =>{
-
-			function handleResize () {
-				this.setState();
-			}
-
-			window.addEventListener('resize', handleResize);
-		});
-*/
 		this.getDefaultPieces = this.getDefaultPieces.bind(this);
 	}
 
@@ -64,7 +49,6 @@ class Board extends React.Component {
 
 	renderSquare(square) {
 
-	
 		return (
 			<Square square={square} moveHandler={this.props.moveHandler}/>
 		);
@@ -81,7 +65,6 @@ class Board extends React.Component {
 		return (
 			<div ref={this.ref} className={styles.board}>
 				{rows}
-				
 			</div>
 		);
 	}
