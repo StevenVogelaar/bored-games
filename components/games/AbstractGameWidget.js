@@ -1,8 +1,5 @@
 import styles from './board.module.css'
-import Board from './board'
-import Container from 'react-bootstrap/Container';
 import GameController from '../../lib/GameControllers/GameController'
-import Button from 'react-bootstrap/Button';
 import autoBind from 'auto-bind';
 import Alert from 'react-bootstrap/Alert';
 
@@ -26,7 +23,10 @@ class AbstractGameWidget extends React.Component{
 
 
 		this.gameController = new GameController(this.getGameType());
-		this.gameController.addListener('error', this.gameControllerError)
+		this.gameController.addListener('error', this.gameControllerError);
+		//this.gameController.addListener('piecePosChange', this.piecePosChangeHandler);
+		this.gameController.addListener('piecePlaced', this.piecePlacedHandler);
+		this.gameController.addListener('invalidMove', this.invalidMoveHandler);
 	}
 
 	/**
@@ -77,28 +77,20 @@ class AbstractGameWidget extends React.Component{
 			if (x > position.left && x < position.left + width && y > position.top && y < position.top + width){
 				const gameState = {...this.state.gameState};
 				
-				gameState.squares[square.id].piece.type = gameState.squares[id].piece.type;
-				gameState.squares[id].piece.type = null;
+				console.log('square id: ' + square.id);
+				gameState.squares[square.id].piece = gameState.squares[id].piece;
+				gameState.squares[id].piece = null;
 
 				this.setState({gameState: gameState});
+
+				const dY = Math.trunc(square.id / 8);
+				const dX = square.id % 8;
+				const oY = Math.trunc(id / 8);
+				const oX = id % 8;
+
+				this.gameController.piecePlaced(gameState.squares[square.id].piece.id, oX, oY, dX, dY);
 			}
 		}
-	}
-
-
-	render() {
-
-		const alertJSX = this.getAlertJSX();
-
-		return (
-			<Container className={styles.boardContainerContainer}>
-				{alertJSX}
-				<Button onClick={this.gameController.getGameInfo}>TEst</Button>
-				<div className={styles.boardContainer}>
-					<Board gameState={this.state.gameState} moveHandler={this.moveHandler} />
-				</div>
-			</Container>
-		);
 	}
 
 
@@ -134,6 +126,62 @@ class AbstractGameWidget extends React.Component{
 		throw Error("Must override AbstractGamePage.getGameType() in sub classes.");
 	}
 
+
+	// ========= GameController handlers ===========
+
+	piecePosChangeHandler(oX, oY, dX, dY){
+
+	}
+
+	piecePlacedHandler(id, oX, oY, dX, dY){
+		
+		const gameState = {...this.state.gameState};
+
+		const bO = (oY * 8) + oX;
+		const bD = (dY * 8) + dX;
+
+
+		console.log("bO: " + bO);
+		console.log("bD: " + bD);
+		const piece = gameState.squares[bO].piece;
+
+		console.log(gameState.squares);
+
+		console.log('pieceid: ' + piece.id);
+		console.log('id: ' + id);
+		if (piece.id != id) throw Error("Game state missmatch.");
+
+		gameState.squares[bO].piece = null;
+		gameState.squares[bD].piece = piece;
+
+		this.setState({gameState: gameState});
+	}
+
+	invalidMoveHandler(id, oX, oY, dX, dY){
+		console.log(oX);
+		console.log(oY);
+		console.log(dX);
+		console.log(dY);
+		this.piecePlacedHandler(id, dX, dY, oX, oY); // Reversed the coordinates.
+	}
+
+	// =============================================
+
+	/**
+	 * Just a default render, feel free to override.
+	 */
+	render(){
+		const alertJSX = this.getAlertJSX();
+
+		return (
+			<Container className={styles.boardContainerContainer}>
+				{alertJSX}
+				<div className={styles.boardContainer}>
+					<Board gameState={this.state.gameState} moveHandler={this.moveHandler} />
+				</div>
+			</Container>
+		);
+	}
 }
 
 export default AbstractGameWidget;

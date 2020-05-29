@@ -43,14 +43,14 @@ class Board extends React.Component {
 			cols.push(this.renderSquare(squares[(row * 8) + col]));
 		}
 
-		return <div className={styles.row}>{cols}</div>
+		return <div key={'row_' + row} className={styles.row}>{cols}</div>
 	}
 
 
 	renderSquare(square) {
 
 		return (
-			<Square square={square} moveHandler={this.props.moveHandler}/>
+			<Square key={square.id} square={square} moveHandler={this.props.moveHandler}/>
 		);
 	}
 

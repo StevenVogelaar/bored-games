@@ -31,7 +31,7 @@ class Square extends React.Component {
 		if (this.props.square.piece != null) {
 			p =
 				<Draggable x={0} y={0} parentSquareID={this.props.square.id} parent={this.ref} childSize={pieceSize} moveHandler={this.props.moveHandler}>
-					<GamePiece pieceObj={this.props.square.peice} size={pieceSize} />
+					<GamePiece pieceObj={this.props.square.piece} size={pieceSize} />
 				</Draggable>
 		}
 

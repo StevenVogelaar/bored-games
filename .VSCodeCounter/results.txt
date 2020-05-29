@@ -1,0 +1,86 @@
+Date : 2020-05-29 14:32:36
+Directory : x:\coding_projects\react_stuff\bored-games
+Total : 42 files,  8620 codes, 247 comments, 511 blanks, all 9378 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| JSON       |          2 |      7,373 |          0 |          2 |      7,375 |
+| JavaScript |         28 |      1,007 |        244 |        465 |      1,716 |
+| XML        |          4 |        144 |          3 |          4 |        151 |
+| CSS        |          7 |         78 |          0 |         27 |        105 |
+| Markdown   |          1 |         18 |          0 |         13 |         31 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++--------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                       | files      | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                          |         42 |      8,620 |        247 |        511 |      9,378 |
+| components                                                                                 |         17 |        626 |         92 |        250 |        968 |
+| components\games                                                                           |          7 |        294 |         58 |        125 |        477 |
+| components\games\checkers                                                                  |          2 |         86 |         19 |         34 |        139 |
+| lib                                                                                        |          6 |        197 |        100 |        109 |        406 |
+| lib\GameControllers                                                                        |          1 |         88 |         39 |         50 |        177 |
+| lib\GameObjects                                                                            |          3 |         50 |         50 |         25 |        125 |
+| lib\GameObjects\checkers                                                                   |          2 |         28 |         24 |         12 |         64 |
+| lib\pages                                                                                  |          1 |         14 |          3 |          9 |         26 |
+| messages                                                                                   |          2 |         22 |          6 |         18 |         46 |
+| pages                                                                                      |          8 |        229 |         46 |        112 |        387 |
+| pages\api                                                                                  |          2 |        131 |         46 |         53 |        230 |
+| pages\checkers                                                                             |          1 |         19 |          0 |         14 |         33 |
+| pages\chess                                                                                |          1 |          9 |          0 |         11 |         20 |
+| public                                                                                     |          4 |        144 |          3 |          4 |        151 |
+| public\images                                                                              |          3 |        134 |          3 |          3 |        140 |
+| styles                                                                                     |          2 |         11 |          0 |          3 |         14 |
++--------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++--------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                                   | language   | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| x:\coding_projects\react_stuff\bored-games\README.md                                       | Markdown   |         18 |          0 |         13 |         31 |
+| x:\coding_projects\react_stuff\bored-games\components\checkers-preview.js                  | JavaScript |         32 |          0 |         12 |         44 |
+| x:\coding_projects\react_stuff\bored-games\components\draggable.js                         | JavaScript |         78 |         17 |         21 |        116 |
+| x:\coding_projects\react_stuff\bored-games\components\draggable.module.css                 | CSS        |          4 |          0 |          0 |          4 |
+| x:\coding_projects\react_stuff\bored-games\components\footer.js                            | JavaScript |         15 |          0 |          3 |         18 |
+| x:\coding_projects\react_stuff\bored-games\components\footer.module.css                    | CSS        |          5 |          0 |          3 |          8 |
+| x:\coding_projects\react_stuff\bored-games\components\games\AbstractGameWidget.js          | JavaScript |         84 |         25 |         41 |        150 |
+| x:\coding_projects\react_stuff\bored-games\components\games\Board.js                       | JavaScript |         47 |          4 |         22 |         73 |
+| x:\coding_projects\react_stuff\bored-games\components\games\GamePiece.js                   | JavaScript |          5 |          5 |          2 |         12 |
+| x:\coding_projects\react_stuff\bored-games\components\games\Square.js                      | JavaScript |         25 |          5 |         14 |         44 |
+| x:\coding_projects\react_stuff\bored-games\components\games\board.module.css               | CSS        |         47 |          0 |         12 |         59 |
+| x:\coding_projects\react_stuff\bored-games\components\games\checkers\CheckersGameWidget.js | JavaScript |         78 |         19 |         26 |        123 |
+| x:\coding_projects\react_stuff\bored-games\components\games\checkers\checkers.module.css   | CSS        |          8 |          0 |          8 |         16 |
+| x:\coding_projects\react_stuff\bored-games\components\header.js                            | JavaScript |         30 |          0 |         12 |         42 |
+| x:\coding_projects\react_stuff\bored-games\components\header.module.css                    | CSS        |          3 |          0 |          1 |          4 |
+| x:\coding_projects\react_stuff\bored-games\components\new-game-button.js                   | JavaScript |         95 |          2 |         32 |        129 |
+| x:\coding_projects\react_stuff\bored-games\components\server-tester-http.js                | JavaScript |         35 |         15 |         22 |         72 |
+| x:\coding_projects\react_stuff\bored-games\components\server-tester.js                     | JavaScript |         35 |          0 |         19 |         54 |
+| x:\coding_projects\react_stuff\bored-games\lib\ConfigManager.js                            | JavaScript |         45 |          8 |         25 |         78 |
+| x:\coding_projects\react_stuff\bored-games\lib\GameControllers\GameController.js           | JavaScript |         88 |         39 |         50 |        177 |
+| x:\coding_projects\react_stuff\bored-games\lib\GameObjects\AbstractPiece.js                | JavaScript |         22 |         26 |         13 |         61 |
+| x:\coding_projects\react_stuff\bored-games\lib\GameObjects\checkers\BlackPawnPiece.js      | JavaScript |         14 |         12 |          6 |         32 |
+| x:\coding_projects\react_stuff\bored-games\lib\GameObjects\checkers\RedPawnPiece.js        | JavaScript |         14 |         12 |          6 |         32 |
+| x:\coding_projects\react_stuff\bored-games\lib\pages\AbstractGamePage.js                   | JavaScript |         14 |          3 |          9 |         26 |
+| x:\coding_projects\react_stuff\bored-games\messages\Message.js                             | JavaScript |         13 |          6 |         11 |         30 |
+| x:\coding_projects\react_stuff\bored-games\messages\RequestGameRoomsMessage.js             | JavaScript |          9 |          0 |          7 |         16 |
+| x:\coding_projects\react_stuff\bored-games\package-lock.json                               | JSON       |      7,351 |          0 |          1 |      7,352 |
+| x:\coding_projects\react_stuff\bored-games\package.json                                    | JSON       |         22 |          0 |          1 |         23 |
+| x:\coding_projects\react_stuff\bored-games\pages\_app.js                                   | JavaScript |         28 |          0 |         11 |         39 |
+| x:\coding_projects\react_stuff\bored-games\pages\api\cors.js                               | JavaScript |         12 |          5 |          3 |         20 |
+| x:\coding_projects\react_stuff\bored-games\pages\api\games.js                              | JavaScript |        119 |         41 |         50 |        210 |
+| x:\coding_projects\react_stuff\bored-games\pages\checkers-game.js                          | JavaScript |          9 |          0 |          5 |         14 |
+| x:\coding_projects\react_stuff\bored-games\pages\checkers.js                               | JavaScript |         12 |          0 |          4 |         16 |
+| x:\coding_projects\react_stuff\bored-games\pages\checkers\[rid].js                         | JavaScript |         19 |          0 |         14 |         33 |
+| x:\coding_projects\react_stuff\bored-games\pages\chess\[rid].js                            | JavaScript |          9 |          0 |         11 |         20 |
+| x:\coding_projects\react_stuff\bored-games\pages\index.js                                  | JavaScript |         21 |          0 |         14 |         35 |
+| x:\coding_projects\react_stuff\bored-games\public\images\board_1.svg                       | XML        |        102 |          1 |          1 |        104 |
+| x:\coding_projects\react_stuff\bored-games\public\images\checkers_piece_black.svg          | XML        |         11 |          1 |          1 |         13 |
+| x:\coding_projects\react_stuff\bored-games\public\images\checkers_piece_red.svg            | XML        |         21 |          1 |          1 |         23 |
+| x:\coding_projects\react_stuff\bored-games\public\zeit.svg                                 | XML        |         10 |          0 |          1 |         11 |
+| x:\coding_projects\react_stuff\bored-games\styles\global.css                               | CSS        |         11 |          0 |          2 |         13 |
+| x:\coding_projects\react_stuff\bored-games\styles\index.module.css                         | CSS        |          0 |          0 |          1 |          1 |
+| Total                                                                                      |            |      8,620 |        247 |        511 |      9,378 |
++--------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
