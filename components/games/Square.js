@@ -7,7 +7,7 @@ class Square extends React.Component {
 
 	/**
 	 * 
-	 * @param {square, moveHandler<parent, x, y>, ...props} props 
+	 * @param {square, moveHandler(<Number> parent> x, y), dragHandler(<Number> parent, x, y), ...props} props 
 	 * 		// See CheckersGameWidget.js getDefaultGameState() for whats in "square"
 	 */
 	constructor(props) {
@@ -30,7 +30,8 @@ class Square extends React.Component {
 
 		if (this.props.square.piece != null) {
 			p =
-				<Draggable x={0} y={0} parentSquareID={this.props.square.id} parent={this.ref} childSize={pieceSize} moveHandler={this.props.moveHandler}>
+				<Draggable x={0} y={0} parentSquareID={this.props.square.id} parent={this.ref} childSize={pieceSize} moveHandler={this.props.moveHandler} dragHandler={this.props.dragHandler}
+				pieceObj={this.props.square.piece}>
 					<GamePiece pieceObj={this.props.square.piece} size={pieceSize} />
 				</Draggable>
 		}

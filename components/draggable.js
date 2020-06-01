@@ -1,5 +1,7 @@
 import styles from './draggable.module.css'
 import ReactDOM from 'react-dom';
+import AbstractPiece from '../lib/GameObjects/AbstractPiece';
+import autoBind from 'auto-bind';
 
 /**
  * https://stackoverflow.com/questions/20926551/recommended-way-of-making-react-component-div-draggable
@@ -12,15 +14,20 @@ class Draggable extends React.Component {
 	 * @param {Float} y
 	 * @param {ref} parent
 	 * @param {Number} parentSquareID
-	 * 		id of the parent square element (yeah it makes Draggable less)
+	 * 		id of the parent square element (yeah it makes Draggable less general)
+	 * @param {AbstractPiece} pieceObj
 	 * @param {} childSize
 	 * 		The size of the child element, so it can be properly centered
 	 * 		TODO: Get ridd of this, can just use the size of draggable.
-	 * @param {function(parent, x, y)} movedHandler
+	 * @param {function(<Number> parent, x, y)} moveHandler
+	 * @param {function(<Number> parent, squareIDx, y)} dragHandler
+	 * 			// x and y are a position offset.
 	 * @param  {...any} props 
 	 */
 	constructor(props) {
 		super(props);
+		autoBind(this);
+
 		this.state = {
 			pos: { x: props.x, y: props.y },
 			dragging: false,
@@ -32,10 +39,8 @@ class Draggable extends React.Component {
 		this.leftOffset = 0;
 		this.parent = this.props.parent;
 
-		this.onMouseDown = this.onMouseDown.bind(this);
-		this.onMouseMove = this.onMouseMove.bind(this);
-		this.onMouseUp = this.onMouseUp.bind(this);
 
+		props.pieceObj.addListener('pieceMoved', this.pieceMovedHandler);
 	}
 
 
@@ -58,6 +63,8 @@ class Draggable extends React.Component {
 				y: e.pageY - this.state.rel.y
 			}
 		})
+
+		this.props.dragHandler(this.props.parentSquareID,  e.pageX - this.state.rel.x, e.pageY - this.state.rel.y);
 		e.stopPropagation()
 		e.preventDefault()
 	}
@@ -88,6 +95,24 @@ class Draggable extends React.Component {
 		});
 		e.stopPropagation();
 		e.preventDefault();
+	}
+
+	/**
+	 * 
+	 * Handlers external move events (other player moving the piece).
+	 * 
+	 * @param {Number} x 
+	 * @param {Number} y 
+	 */
+	pieceMovedHandler(x, y){
+
+		const pos = {...this.state.pos};
+
+		pos.x = x;
+		pos.y = y;
+
+		// TODO: maybe clamp the values?
+		this.setState({pos: pos});
 	}
 
 

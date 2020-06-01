@@ -24,9 +24,9 @@ class AbstractGameWidget extends React.Component{
 
 		this.gameController = new GameController(this.getGameType());
 		this.gameController.addListener('error', this.gameControllerError);
-		//this.gameController.addListener('piecePosChange', this.piecePosChangeHandler);
 		this.gameController.addListener('piecePlaced', this.piecePlacedHandler);
 		this.gameController.addListener('invalidMove', this.invalidMoveHandler);
+		this.gameController.addListener('pieceMoved', this.pieceMovedHandler);
 	}
 
 	/**
@@ -77,7 +77,6 @@ class AbstractGameWidget extends React.Component{
 			if (x > position.left && x < position.left + width && y > position.top && y < position.top + width){
 				const gameState = {...this.state.gameState};
 				
-				console.log('square id: ' + square.id);
 				gameState.squares[square.id].piece = gameState.squares[id].piece;
 				gameState.squares[id].piece = null;
 
@@ -88,11 +87,10 @@ class AbstractGameWidget extends React.Component{
 				const oY = Math.trunc(id / 8);
 				const oX = id % 8;
 
-				this.gameController.piecePlaced(gameState.squares[square.id].piece.id, oX, oY, dX, dY);
+				this.gameController.notifyPiecePlaced(gameState.squares[square.id].piece.id, oX, oY, dX, dY);
 			}
 		}
 	}
-
 
 
 	/**
@@ -112,14 +110,6 @@ class AbstractGameWidget extends React.Component{
 		this.setState({error: false});
 	}
 
-	gameControllerError(err){
-
-		console.log('Error in game controller.');
-		this.setState({
-			error: true,
-			errorText: err
-		});
-	}
 
 
 	getGameType(){
@@ -129,8 +119,28 @@ class AbstractGameWidget extends React.Component{
 
 	// ========= GameController handlers ===========
 
-	piecePosChangeHandler(oX, oY, dX, dY){
-
+	/*
+	* Server side in origin.
+	*
+	* @param {Number} squareID of parent square.
+	* 		The parent component of the movable (will be a game square).
+	* @param {*} x
+	*		Offset in x 
+	* @param {*} y 
+	*		Offset in y
+	*/
+	pieceMovedHandler(squareID, x, y) {
+		
+		if (this.state.gameState.squares[squareID].piece){
+			console.log("moved");
+			this.state.gameState.squares[squareID].piece.notifyMoved(x,y);
+		} else {
+			console.error('Recieved movement info for a piece that does not exist.');
+		
+			throw new Error('Recieved movement info for a piece that does not exist.')
+				// TODO resync gamestate!
+		}
+		
 	}
 
 	piecePlacedHandler(id, oX, oY, dX, dY){
@@ -165,6 +175,16 @@ class AbstractGameWidget extends React.Component{
 		this.piecePlacedHandler(id, dX, dY, oX, oY); // Reversed the coordinates.
 	}
 
+	gameControllerError(err){
+
+		console.log('Error in game controller.');
+		this.setState({
+			error: true,
+			errorText: err
+		});
+	}
+
+
 	// =============================================
 
 	/**
@@ -177,7 +197,7 @@ class AbstractGameWidget extends React.Component{
 			<Container className={styles.boardContainerContainer}>
 				{alertJSX}
 				<div className={styles.boardContainer}>
-					<Board gameState={this.state.gameState} moveHandler={this.moveHandler} />
+					<Board gameState={this.state.gameState} moveHandler={this.moveHandler} dragHandler={this.dragHandler} />
 				</div>
 			</Container>
 		);

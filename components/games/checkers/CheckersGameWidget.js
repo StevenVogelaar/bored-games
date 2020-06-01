@@ -74,6 +74,19 @@ class CheckersGameWidget extends AbstractGameWidget {
 	}
 
 
+	/**
+	 * handler for the draggable event.
+	 * 
+	 * @param {Number} squareID 
+	 * @param {Number} x 
+	 * 		offset
+	 * @param {Number} y 
+	 * 		offset
+	 */
+	dragHandler(squareID, x, y){
+		this.gameController.notifyPieceMoved(squareID, x, y);
+	}
+
 	// ========= GameController handlers ===========
 
 	/**
@@ -131,7 +144,7 @@ class CheckersGameWidget extends AbstractGameWidget {
 				{alertJSX}
 				<Button onClick={this.buttonHandler}>TEst</Button>
 				<div className={styles.boardContainer}>
-					<Board gameState={this.state.gameState} moveHandler={this.moveHandler} />
+					<Board gameState={this.state.gameState} moveHandler={this.moveHandler} dragHandler={this.dragHandler}/>
 				</div>
 			</Container>
 		);

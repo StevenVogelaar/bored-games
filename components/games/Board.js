@@ -9,14 +9,16 @@ class Board extends React.Component {
 
 	/**
 	 * 
-	 * @param {{gameState, moveHandler<parent, x, y>}, ...props} props 
+	 * @param {{gameState, moveHandler(<Number> pieceID x, y), dragHandler(<Number> parent, x, y)}, ...props} props 
 	 */
 	constructor(props) {
 		super(props);
 
 		this.state = {
 			reload: true,
-		}
+		};
+
+		
 
 		this.ref = React.createRef();
 		this.getDefaultPieces = this.getDefaultPieces.bind(this);
@@ -50,7 +52,7 @@ class Board extends React.Component {
 	renderSquare(square) {
 
 		return (
-			<Square key={square.id} square={square} moveHandler={this.props.moveHandler}/>
+			<Square key={square.id} square={square} moveHandler={this.props.moveHandler} dragHandler={this.props.dragHandler}/>
 		);
 	}
 
