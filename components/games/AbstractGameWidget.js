@@ -19,6 +19,8 @@ class AbstractGameWidget extends React.Component{
 			gameState: {
 				squares: this.getDefaultGameState(),
 			},
+			player: null,
+			playerTurn: 1
 		};
 
 
@@ -27,6 +29,9 @@ class AbstractGameWidget extends React.Component{
 		this.gameController.addListener('piecePlaced', this.piecePlacedHandler);
 		this.gameController.addListener('invalidMove', this.invalidMoveHandler);
 		this.gameController.addListener('pieceMoved', this.pieceMovedHandler);
+		this.gameController.addListener('playerAssignment', this.playerAssignmentHandler);
+		this.gameController.addListener('resetPosition', this.resetPositionHandler);
+		this.gameController.addListener('playerTurn', this.playerTurnHandler);
 	}
 
 	/**
@@ -75,10 +80,18 @@ class AbstractGameWidget extends React.Component{
 			const width = $(square.ref.current).width();
 		
 			if (x > position.left && x < position.left + width && y > position.top && y < position.top + width){
+
 				const gameState = {...this.state.gameState};
 				
-				gameState.squares[square.id].piece = gameState.squares[id].piece;
-				gameState.squares[id].piece = null;
+		
+				if (square.piece == null){ // Dont remove the piece if the destination is occupied.
+					gameState.squares[square.id].piece = gameState.squares[id].piece;
+					gameState.squares[id].piece = null;
+				} else {
+					console.log("a23423523523532");
+					gameState.squares[id].piece.notifyMoved(0,0); // Make sure other clients know the piece was reset.
+		
+				}
 
 				this.setState({gameState: gameState});
 
@@ -136,9 +149,7 @@ class AbstractGameWidget extends React.Component{
 			this.state.gameState.squares[squareID].piece.notifyMoved(x,y);
 		} else {
 			console.error('Recieved movement info for a piece that does not exist.');
-		
-			throw new Error('Recieved movement info for a piece that does not exist.')
-				// TODO resync gamestate!
+			this.gameController.requestGameState();
 		}
 		
 	}
@@ -149,17 +160,17 @@ class AbstractGameWidget extends React.Component{
 
 		const bO = (oY * 8) + oX;
 		const bD = (dY * 8) + dX;
-
-
-		console.log("bO: " + bO);
-		console.log("bD: " + bD);
 		const piece = gameState.squares[bO].piece;
 
-		console.log(gameState.squares);
+		if (piece.id != id) {
+			console.error("Game state missmatch.");
+			this.gameController.requestGameState();
+		}
+	
 
-		console.log('pieceid: ' + piece.id);
-		console.log('id: ' + id);
-		if (piece.id != id) throw Error("Game state missmatch.");
+		if (bO === bD){
+			gameState.squares[bO].piece.notifyMoved(0,0);
+		}
 
 		gameState.squares[bO].piece = null;
 		gameState.squares[bD].piece = piece;
@@ -168,11 +179,33 @@ class AbstractGameWidget extends React.Component{
 	}
 
 	invalidMoveHandler(id, oX, oY, dX, dY){
-		console.log(oX);
-		console.log(oY);
-		console.log(dX);
-		console.log(dY);
 		this.piecePlacedHandler(id, dX, dY, oX, oY); // Reversed the coordinates.
+	}
+
+	resetPositionHandler(id, x, y){
+
+		const piece = this.state.gameState.squares[(y * 8) + x].piece;
+
+		if (piece && piece.getID() == id){
+			piece.notifyMoved(0,0);
+		} else {
+			console.error("State missmatch.");
+			this.gameController.requestGameState();
+		}
+	}
+
+	/**
+	 * 	
+	 * @param {Number} player 
+	 * 		1 or 2
+	 * 
+	 */
+	playerAssignmentHandler(player){
+		this.setState({player: player});
+	}
+
+	playerTurnHandler(player){
+		this.setState({playerTurn: player});
 	}
 
 	gameControllerError(err){

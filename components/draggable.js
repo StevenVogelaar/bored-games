@@ -39,10 +39,12 @@ class Draggable extends React.Component {
 		this.leftOffset = 0;
 		this.parent = this.props.parent;
 
-
 		props.pieceObj.addListener('pieceMoved', this.pieceMovedHandler);
 	}
 
+	componentWillUnmount(){
+		this.props.pieceObj.removeListener('pieceMoved', this.pieceMovedHandler);
+	}
 
 	componentDidUpdate(props, state) {
 
@@ -62,9 +64,15 @@ class Draggable extends React.Component {
 				x: e.pageX - this.state.rel.x,
 				y: e.pageY - this.state.rel.y
 			}
-		})
+		});
 
-		this.props.dragHandler(this.props.parentSquareID,  e.pageX - this.state.rel.x, e.pageY - this.state.rel.y);
+		const boardWidth = $(this.parent.current).width(); // TODO: Grab this only on size change events?
+
+		const adjustedX = (e.pageX - this.state.rel.x) / boardWidth;
+		const adjustedY = ( e.pageY - this.state.rel.y) / boardWidth;
+
+		this.props.dragHandler(this.props.parentSquareID,  adjustedX, adjustedY);
+
 		e.stopPropagation()
 		e.preventDefault()
 	}
@@ -108,8 +116,11 @@ class Draggable extends React.Component {
 
 		const pos = {...this.state.pos};
 
-		pos.x = x;
-		pos.y = y;
+
+		const boardWidth = $(this.parent.current).width();
+
+		pos.x = x * boardWidth;
+		pos.y = y * boardWidth;
 
 		// TODO: maybe clamp the values?
 		this.setState({pos: pos});
@@ -131,7 +142,7 @@ class Draggable extends React.Component {
 			<div ref={this.ref}
 				onMouseDown={this.onMouseDown}
 				style={{ position: "absolute", left: this.state.pos.x + this.leftOffset + "px", top: this.state.pos.y + this.topOffset + "px" }}
-				className={styles.draggable}>{this.props.children}
+				className={styles.draggable + ' ' + (this.state.dragging ? styles.active : null)}>{this.props.children}
 			</div>
 		);
 	}

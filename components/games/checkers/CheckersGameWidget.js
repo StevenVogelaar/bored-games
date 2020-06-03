@@ -111,7 +111,7 @@ class CheckersGameWidget extends AbstractGameWidget {
 
 				if (sGameState.board[row][col] != null) {
 					if (sGameState.board[row][col].pieceType === 'pawn') {
-						if (sGameState.board[row][col].owner === 'p1'){
+						if (sGameState.board[row][col].owner === 1){
 							piece = new RedPawnPiece(sGameState.board[row][col].owner,sGameState.board[row][col].id );
 						} else {
 							piece = new BlackPawnPiece(sGameState.board[row][col].owner, sGameState.board[row][col].id);
@@ -125,7 +125,7 @@ class CheckersGameWidget extends AbstractGameWidget {
 			}
 		}
 
-		this.setState({gameState: gameState});
+		this.setState({gameState: gameState, playerTurn: sGameState.player});
 	}
 
 	// =============================================
@@ -144,7 +144,8 @@ class CheckersGameWidget extends AbstractGameWidget {
 				{alertJSX}
 				<Button onClick={this.buttonHandler}>TEst</Button>
 				<div className={styles.boardContainer}>
-					<Board gameState={this.state.gameState} moveHandler={this.moveHandler} dragHandler={this.dragHandler}/>
+					<div className={this.state.playerTurn === 1 ? styles.turnIndicatorRed : styles.turnIndicatorBlack}>{this.state.playerTurn === 1 ? "Red's turn" : "Black's turn"}</div>
+					<Board gameState={this.state.gameState} moveHandler={this.moveHandler} dragHandler={this.dragHandler} player={this.gameController.getPlayer()}/>
 				</div>
 			</Container>
 		);
