@@ -7,6 +7,8 @@ import styles from '../board.module.css'
 import Router from 'next/router';
 import RedPawnPiece from '../../../lib/GameObjects/checkers/RedPawnPiece';
 import BlackPawnPiece from '../../../lib/GameObjects/checkers/BlackPawnPiece';
+import BlackQueenPiece from '../../../lib/GameObjects/checkers/BlackQueenPiece';
+import RedQueenPiece from '../../../lib/GameObjects/checkers/RedQueenPiece';
 
 
 class CheckersGameWidget extends AbstractGameWidget {
@@ -53,6 +55,7 @@ class CheckersGameWidget extends AbstractGameWidget {
 
 		// Bind netcode functions woohoo.
 		this.gameController.addListener('stateRefresh', this.stateRefreshHandler);
+		this.gameController.addListener('changePieceType', this.changePieceTypeHandler);
 	}
 
 	/**
@@ -117,7 +120,11 @@ class CheckersGameWidget extends AbstractGameWidget {
 							piece = new BlackPawnPiece(sGameState.board[row][col].owner, sGameState.board[row][col].id);
 						}
 					} else {
-						
+						if (sGameState.board[row][col].owner === 1){
+							piece = new RedQueenPiece(sGameState.board[row][col].owner,sGameState.board[row][col].id );
+						} else {
+							piece = new BlackQueenPiece(sGameState.board[row][col].owner, sGameState.board[row][col].id);
+						}
 					}
 
 					gameState.squares[(row * 8) + col].piece = piece;
@@ -126,6 +133,33 @@ class CheckersGameWidget extends AbstractGameWidget {
 		}
 
 		this.setState({gameState: gameState, playerTurn: sGameState.player});
+	}
+
+	changePieceTypeHandler(id, x, y, type){
+
+		const gameState = {...this.state.gameState};
+		const index = (y * 8) + x
+		const piece = gameState.squares[index].piece;
+
+		if (!piece || piece.getID() !== id) {
+			console.error('Game state missmatch.');
+			this.gameController.requestGameState();
+			return;
+		}
+
+		if (type === 'queen'){
+
+			if (piece.getPieceOwner() === 1){
+				gameState.squares[index].piece = new RedQueenPiece(1, id);
+			} else {
+				gameState.squares[index].piece = new BlackQueenPiece(1, id);
+			}
+			
+			this.setState({gameState: gameState});
+
+		} else {
+			this.setState({error: true, errorText: 'Invalid piece type recieved from server.'});
+		}
 	}
 
 	// =============================================
@@ -139,12 +173,20 @@ class CheckersGameWidget extends AbstractGameWidget {
 
 		const alertJSX = this.getAlertJSX();
 
+		if (this.state.winningPlayer > 0){
+			var turnText = this.state.winningPlayer === 1 ? "Red has won!" : "Black has won!";
+			var turnStyle = this.state.winningPlayer === 1 ? styles.turnIndicatorRed : styles.turnIndicatorBlack;
+		} else {
+			var turnText = this.state.playerTurn === 1 ? "Red's turn" : "Black's turn";
+			var turnStyle = this.state.playerTurn === 1 ? styles.turnIndicatorRed : styles.turnIndicatorBlack;
+		}
+
 		return (
 			<Container className={styles.boardContainerContainer}>
 				{alertJSX}
 				<Button onClick={this.buttonHandler}>TEst</Button>
 				<div className={styles.boardContainer}>
-					<div className={this.state.playerTurn === 1 ? styles.turnIndicatorRed : styles.turnIndicatorBlack}>{this.state.playerTurn === 1 ? "Red's turn" : "Black's turn"}</div>
+					<div className={turnStyle}>{turnText}</div>
 					<Board gameState={this.state.gameState} moveHandler={this.moveHandler} dragHandler={this.dragHandler} player={this.gameController.getPlayer()}/>
 				</div>
 			</Container>

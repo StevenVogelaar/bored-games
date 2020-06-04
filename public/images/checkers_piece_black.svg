@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 width="53.334px" height="53.334px" viewBox="0 0 53.334 53.334" enable-background="new 0 0 53.334 53.334" xml:space="preserve">
-<g>
-	<circle cx="26.667" cy="26.667" r="25.167"/>
-	<path fill="#58595B" d="M26.666,53.334C11.962,53.334,0,41.371,0,26.667S11.962,0,26.666,0c14.705,0,26.668,11.963,26.668,26.667
-		S41.371,53.334,26.666,53.334z M26.666,3C13.616,3,3,13.617,3,26.667s10.616,23.667,23.666,23.667
-		c13.051,0,23.668-10.617,23.668-23.667S39.717,3,26.666,3z"/>
-</g>
+<svg width="100%" height="100%" viewBox="0 0 223 223" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g transform="matrix(1,0,0,1,-2615.67,-852.783)">
+        <g transform="matrix(0,4.16667,4.16667,0,2726.79,859.033)">
+            <path d="M25.167,-25.167C11.268,-25.167 0,-13.899 0,0.001C0,13.899 11.268,25.167 25.167,25.167C39.066,25.167 50.334,13.899 50.334,0.001C50.334,-13.899 39.066,-25.167 25.167,-25.167" style="fill:rgb(35,31,32);fill-rule:nonzero;"/>
+        </g>
+        <g transform="matrix(0,4.16667,4.16667,0,2726.79,859.033)">
+            <path d="M25.167,-26.667C39.885,-26.667 51.834,-14.718 51.834,0C51.834,14.718 39.885,26.667 25.167,26.667C10.449,26.667 -1.5,14.718 -1.5,0C-1.5,-14.718 10.449,-26.667 25.167,-26.667ZM25.167,-23.667C12.105,-23.667 1.5,-13.062 1.5,0C1.5,13.062 12.105,23.667 25.167,23.667C38.229,23.667 48.834,13.062 48.834,0C48.834,-13.062 38.229,-23.667 25.167,-23.667Z" style="fill:rgb(88,89,91);"/>
+        </g>
+    </g>
 </svg>

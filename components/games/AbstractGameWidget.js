@@ -2,6 +2,7 @@ import styles from './board.module.css'
 import GameController from '../../lib/GameControllers/GameController'
 import autoBind from 'auto-bind';
 import Alert from 'react-bootstrap/Alert';
+import { Transition } from 'react-transition-group';
 
 
 
@@ -20,7 +21,9 @@ class AbstractGameWidget extends React.Component{
 				squares: this.getDefaultGameState(),
 			},
 			player: null,
-			playerTurn: 1
+			playerTurn: 1,
+			prevGameState: null,
+			winningPlayer: -1
 		};
 
 
@@ -32,6 +35,8 @@ class AbstractGameWidget extends React.Component{
 		this.gameController.addListener('playerAssignment', this.playerAssignmentHandler);
 		this.gameController.addListener('resetPosition', this.resetPositionHandler);
 		this.gameController.addListener('playerTurn', this.playerTurnHandler);
+		this.gameController.addListener('removePiece', this.removePieceHandler);
+		this.gameController.addListener('won', this.wonHandler);
 	}
 
 	/**
@@ -61,6 +66,12 @@ class AbstractGameWidget extends React.Component{
 		return ar;
 	}
 
+	
+	wonHandler(player){
+		this.setState({winningPlayer: player});
+	}
+
+
 	/**
 	 * Removes the gamepiece from parent, and puts it in the square in which
 	 * the x, y coordinates are.
@@ -82,18 +93,15 @@ class AbstractGameWidget extends React.Component{
 			if (x > position.left && x < position.left + width && y > position.top && y < position.top + width){
 
 				const gameState = {...this.state.gameState};
-				
-		
 				if (square.piece == null){ // Dont remove the piece if the destination is occupied.
 					gameState.squares[square.id].piece = gameState.squares[id].piece;
 					gameState.squares[id].piece = null;
 				} else {
-					console.log("a23423523523532");
 					gameState.squares[id].piece.notifyMoved(0,0); // Make sure other clients know the piece was reset.
-		
 				}
 
-				this.setState({gameState: gameState});
+				console.log("SETTING PREV GAME STATE");
+				this.setState({gameState: gameState, prevGameState: null});
 
 				const dY = Math.trunc(square.id / 8);
 				const dX = square.id % 8;
@@ -101,8 +109,17 @@ class AbstractGameWidget extends React.Component{
 				const oX = id % 8;
 
 				this.gameController.notifyPiecePlaced(gameState.squares[square.id].piece.id, oX, oY, dX, dY);
+
+				break;
 			}
 		}
+	}
+
+	removePieceHandler(id, x, y){
+		const gameState = {...this.state.gameState};
+		gameState.squares[(y * 8) + x].piece = null;
+
+		this.setState({gameState: gameState});
 	}
 
 
@@ -113,7 +130,7 @@ class AbstractGameWidget extends React.Component{
 	getAlertJSX(){
 
 		if (this.state.error){
-			return <Alert variant="danger" dismissible="true" onClose={this.hideError}>{this.state.errorText}</Alert>
+			return <Alert  variant="danger" dismissible="true" onClose={this.hideError}>{this.state.errorText}</Alert>
 		}
 
 		return null;
@@ -122,8 +139,6 @@ class AbstractGameWidget extends React.Component{
 	hideError(){
 		this.setState({error: false});
 	}
-
-
 
 	getGameType(){
 		throw Error("Must override AbstractGamePage.getGameType() in sub classes.");
@@ -156,10 +171,13 @@ class AbstractGameWidget extends React.Component{
 
 	piecePlacedHandler(id, oX, oY, dX, dY){
 		
-		const gameState = {...this.state.gameState};
-
 		const bO = (oY * 8) + oX;
 		const bD = (dY * 8) + dX;
+
+		if (this.state.gameState.squares[bD].piece) return; // TODO: Should probably request game state here..
+
+		const gameState = {...this.state.gameState};
+
 		const piece = gameState.squares[bO].piece;
 
 		if (piece.id != id) {
@@ -180,6 +198,7 @@ class AbstractGameWidget extends React.Component{
 
 	invalidMoveHandler(id, oX, oY, dX, dY){
 		this.piecePlacedHandler(id, dX, dY, oX, oY); // Reversed the coordinates.
+		// TODO: Should probably just store the previous board state and restore.
 	}
 
 	resetPositionHandler(id, x, y){
