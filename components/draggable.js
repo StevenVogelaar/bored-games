@@ -2,6 +2,7 @@ import styles from './draggable.module.css'
 import ReactDOM from 'react-dom';
 import AbstractPiece from '../lib/GameObjects/AbstractPiece';
 import autoBind from 'auto-bind';
+import $ from 'jquery';
 
 /**
  * https://stackoverflow.com/questions/20926551/recommended-way-of-making-react-component-div-draggable

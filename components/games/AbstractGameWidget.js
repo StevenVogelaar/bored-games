@@ -3,6 +3,7 @@ import GameController from '../../lib/GameControllers/GameController'
 import autoBind from 'auto-bind';
 import Alert from 'react-bootstrap/Alert';
 import { Transition } from 'react-transition-group';
+import $ from 'jquery';
 
 
 

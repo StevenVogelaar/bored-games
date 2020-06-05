@@ -1,6 +1,7 @@
 import styles from './board.module.css'
 import GamePiece from './GamePiece'
 import Draggable from '../draggable';
+import $ from 'jquery';
 
 
 class Square extends React.Component {
